@@ -7,101 +7,87 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;700&family=Tajawal:wght@400;500;700&display=swap');
 
-        /* تفعيل طباعة الألوان في المتصفح */
+        /* تفعيل طباعة الألوان بدقة في المتصفح */
         * {
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
+            box-sizing: border-box;
         }
 
         body {
             font-family: 'Tajawal', 'Noto Sans Arabic', sans-serif;
-            background-color: #fcf4f6; /* خلفية ناعمة جداً للشاشة */
+            background-color: #e9ecef; /* خلفية رمادية هادئة للشاشة لتبرز الورقة */
             margin: 0;
-            padding: 40px 20px;
+            padding: 20px 0;
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
             min-height: 100vh;
         }
 
-        /* زر الطباعة */
+        /* زر الطباعة (يختفي عند الطباعة) */
         .print-btn {
             background: #d49aab;
             color: white;
             border: none;
             padding: 12px 35px;
             font-size: 16px;
-            font-family: inherit;
             font-weight: bold;
             border-radius: 30px;
             cursor: pointer;
             box-shadow: 0 4px 15px rgba(212, 154, 171, 0.4);
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             transition: all 0.3s ease;
-            letter-spacing: 1px;
         }
         .print-btn:hover {
             background: #c28295;
             transform: translateY(-2px);
         }
 
-        /* قياس ورقة الطباعة A4 المودرن */
-        .planner-page {
+        /* --- محاكاة ورقة A4 على الشاشة --- */
+        .a4-paper {
             width: 210mm;
             height: 297mm;
             background-color: #ffffff;
-            padding: 20px;
-            box-sizing: border-box;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            /* الهامش المطلوب 1.5 سم من كل الأطراف يتم تطبيقه كـ padding على الشاشة */
+            padding: 1.5cm; 
+            position: relative;
+        }
+
+        /* شبكة الكروت (4 كروت في الورقة) */
+        .cards-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             grid-template-rows: repeat(2, 1fr);
-            gap: 20px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
-            border-radius: 5px;
+            gap: 1cm; /* المسافة بين الكروت داخل الورقة */
+            width: 100%;
+            height: 100%; /* لملء المساحة المتبقية بعد خصم الـ 1.5 سم */
         }
 
-        /* تصميم الكرت الواحد - راقي ونظيف */
+        /* تصميم الكرت الواحد - ناعم وراقي */
         .measurement-card {
             border: 1.5px solid #ebd3da;
-            border-radius: 15px;
-            padding: 18px;
-            background: linear-gradient(180deg, #ffffff 0%, #fffbfc 100%);
-            box-sizing: border-box;
+            border-radius: 12px;
+            padding: 15px;
+            background: #fffbfc;
             display: flex;
             flex-direction: column;
             position: relative;
-            transition: 0.3s;
-        }
-
-        /* الكلمة المائية الشفافة في الخلفية لتعطي فخامة */
-        .measurement-card::before {
-            content: "Sewing Design";
-            position: absolute;
-            font-size: 40px;
-            font-family: serif;
-            font-style: italic;
-            color: rgba(235, 211, 218, 0.25);
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) rotate(-30deg);
-            white-space: nowrap;
-            pointer-events: none;
-            z-index: 1;
+            height: 100%;
         }
 
         /* الهيدر العلوي */
         .card-header {
             background-color: #ebd3da;
             color: #5c474e;
-            font-weight: 700;
-            font-size: 15px;
-            padding: 8px 20px;
-            border-radius: 25px;
+            font-weight: bold;
+            font-size: 14px;
+            padding: 6px 15px;
+            border-radius: 20px;
             display: inline-block;
             align-self: flex-start;
-            margin-bottom: 18px;
-            z-index: 2;
+            margin-bottom: 12px;
         }
 
         /* قائمة الحقول */
@@ -110,58 +96,56 @@
             padding: 0;
             margin: 0;
             flex-grow: 1;
-            z-index: 2;
         }
 
         .measurement-item {
             display: flex;
             align-items: center;
-            margin-bottom: 9px;
-            font-size: 14px;
+            margin-bottom: 7px;
+            font-size: 13.5px;
             color: #5a4f53;
             font-weight: 500;
             position: relative;
         }
 
-        /* الدائرة الأنيقة بجانب الكلمة */
+        /* الدائرة الأنيقة */
         .checkbox-dot {
             width: 10px;
             height: 10px;
             border-radius: 50%;
             background-color: #f7e8ec;
             border: 1.5px solid #d49aab;
-            margin-left: 12px;
+            margin-left: 10px;
             display: inline-block;
         }
 
-        /* خط الكتابة */
+        /* الخط المنقط */
         .line-space {
             flex-grow: 1;
             border-bottom: 1px dashed #d49aab;
-            margin-right: 10px;
-            height: 15px;
+            margin-right: 8px;
+            height: 12px;
             opacity: 0.6;
         }
 
         /* الفوتر (الملاحظات) */
         .card-footer {
-            margin-top: 15px;
-            z-index: 2;
-            padding-top: 10px;
+            margin-top: auto;
+            padding-top: 8px;
             border-top: 1px solid #f2e4e8;
         }
 
         .notes-header {
             color: #a87988;
-            font-size: 13px;
-            font-weight: 700;
-            margin-bottom: 8px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 6px;
         }
 
         .info-row {
             display: flex;
             justify-content: space-between;
-            font-size: 12px;
+            font-size: 11px;
             color: #706468;
         } 
         
@@ -171,23 +155,17 @@
             align-items: flex-end;
         }
 
-        /* --- تصميم أدوات التعديل والإضافة --- */
+        /* --- تصميم أدوات التعديل --- */
         [contenteditable="true"] {
             outline: none;
             border-bottom: 1px solid transparent;
             transition: 0.2s;
             cursor: text;
-            padding: 2px 4px;
         }
         
         [contenteditable="true"]:hover {
-            background-color: #fcf4f6;
-            border-radius: 4px;
-        }
-        
-        [contenteditable="true"]:focus {
-            background-color: #ffffff;
-            border-bottom: 1px dashed #d49aab;
+            background-color: #fcecf0;
+            border-radius: 3px;
         }
 
         .delete-btn, .add-btn {
@@ -213,141 +191,159 @@
         }
 
         .add-btn {
-            width: 24px;
-            height: 24px;
+            width: 22px;
+            height: 22px;
             border-radius: 50%;
-            font-size: 16px;
+            font-size: 14px;
             background: #b58291;
-            bottom: 70px;
+            bottom: 60px;
             left: 50%;
             transform: translateX(-50%);
         }
 
-        .measurement-item:hover .delete-btn { opacity: 1; right: 5px; }
+        .measurement-item:hover .delete-btn { opacity: 1; right: 0; }
         .measurement-card:hover .add-btn { opacity: 1; }
 
-        /* إعدادات الطباعة للورقة البيضاء النظيفة */
+        /* --- إعدادات الطباعة الحقيقية --- */
+        /* هذا الكود يجبر الطابعة على عمل هامش 1.5 سم بالضبط وورق A4 */
+        @page {
+            size: A4;
+            margin: 1.5cm; 
+        }
+
         @media print {
-            body { background: none; padding: 0; margin: 0; }
-            .planner-page { box-shadow: none; border-radius: 0; width: 210mm; height: 297mm; }
-            .measurement-card { border-color: #ebd3da; background: #ffffff; }
+            body { 
+                background: white; 
+                padding: 0; 
+                margin: 0; 
+            }
+            .a4-paper { 
+                box-shadow: none; 
+                padding: 0; /* نلغي الـ padding لأن الطابعة ستأخذ الهامش من @page */
+                width: 100%;
+                height: 100%;
+            }
+            .cards-grid {
+                /* الارتفاع الإجمالي 297مم - الهوامش (15مم فوق + 15مم تحت) = 267مم */
+                height: 267mm; 
+            }
+            /* إخفاء واجهة التحكم عند الطباعة */
             .print-btn, .delete-btn, .add-btn { display: none !important; }
-            [contenteditable="true"] { padding: 0; }
-            [contenteditable="true"]:hover, [contenteditable="true"]:focus { background: none; border-bottom: transparent; }
+            [contenteditable="true"]:hover { background: none; border-bottom: transparent; }
         }
     </style>
 </head>
 <body>
 
-    <button class="print-btn" onclick="window.print()">طباعة الورقة (A4)</button>
+    <button class="print-btn" onclick="window.print()">🖨️ طباعة الورقة (A4)</button>
 
-    <div class="planner-page">
-        
-        <!-- الكرت الأول -->
-        <div class="measurement-card">
-            <div class="card-header"><span contenteditable="true">قوماشی خاتوو:</span></div>
-            <ul class="measurement-list">
-                <li class="measurement-item"><span class="checkbox-dot"></span> <span contenteditable="true">شان</span> <span class="line-space"></span> <button class="delete-btn" onclick="deleteField(this)">✖</button></li>
-                <li class="measurement-item"><span class="checkbox-dot"></span> <span contenteditable="true">سینگ</span> <span class="line-space"></span> <button class="delete-btn" onclick="deleteField(this)">✖</button></li>
-                <li class="measurement-item"><span class="checkbox-dot"></span> <span contenteditable="true">کەمەر</span> <span class="line-space"></span> <button class="delete-btn" onclick="deleteField(this)">✖</button></li>
-                <li class="measurement-item"><span class="checkbox-dot"></span> <span contenteditable="true">سەر شان تا کەمەر</span> <span class="line-space"></span> <button class="delete-btn" onclick="deleteField(this)">✖</button></li>
-                <li class="measurement-item"><span class="checkbox-dot"></span> <span contenteditable="true">درێژی قۆڵ</span> <span class="line-space"></span> <button class="delete-btn" onclick="deleteField(this)">✖</button></li>
-                <li class="measurement-item"><span class="checkbox-dot"></span> <span contenteditable="true">پانی قۆڵ</span> <span class="line-space"></span> <button class="delete-btn" onclick="deleteField(this)">✖</button></li>
-                <li class="measurement-item"><span class="checkbox-dot"></span> <span contenteditable="true">پانی پشت</span> <span class="line-space"></span> <button class="delete-btn" onclick="deleteField(this)">✖</button></li>
-                <li class="measurement-item"><span class="checkbox-dot"></span> <span contenteditable="true">باڵا</span> <span class="line-space"></span> <button class="delete-btn" onclick="deleteField(this)">✖</button></li>
-                <li class="measurement-item"><span class="checkbox-dot"></span> <span contenteditable="true">پەنجە</span> <span class="line-space"></span> <button class="delete-btn" onclick="deleteField(this)">✖</button></li>
-            </ul>
-            <button class="add-btn" onclick="addField(this)" title="إضافة حقل">➕</button>
-            <div class="card-footer">
-                <div class="notes-header"><span contenteditable="true">تێبینی:</span></div>
-                <div class="info-row">
-                    <div class="info-field"><span contenteditable="true">مۆبایل:</span> <span class="line-space"></span></div>
-                    <div class="info-field"><span contenteditable="true">بەروار: / / 2024</span> <span class="line-space"></span></div>
+    <div class="a4-paper">
+        <div class="cards-grid">
+            
+            <!-- الكرت الأول -->
+            <div class="measurement-card">
+                <div class="card-header"><span contenteditable="true">قوماشی خاتوو:</span></div>
+                <ul class="measurement-list">
+                    <li class="measurement-item"><span class="checkbox-dot"></span> <span contenteditable="true">شان</span> <span class="line-space"></span> <button class="delete-btn" onclick="deleteField(this)">✖</button></li>
+                    <li class="measurement-item"><span class="checkbox-dot"></span> <span contenteditable="true">سینگ</span> <span class="line-space"></span> <button class="delete-btn" onclick="deleteField(this)">✖</button></li>
+                    <li class="measurement-item"><span class="checkbox-dot"></span> <span contenteditable="true">کەمەر</span> <span class="line-space"></span> <button class="delete-btn" onclick="deleteField(this)">✖</button></li>
+                    <li class="measurement-item"><span class="checkbox-dot"></span> <span contenteditable="true">سەر شان تا کەمەر</span> <span class="line-space"></span> <button class="delete-btn" onclick="deleteField(this)">✖</button></li>
+                    <li class="measurement-item"><span class="checkbox-dot"></span> <span contenteditable="true">درێژی قۆڵ</span> <span class="line-space"></span> <button class="delete-btn" onclick="deleteField(this)">✖</button></li>
+                    <li class="measurement-item"><span class="checkbox-dot"></span> <span contenteditable="true">پانی قۆڵ</span> <span class="line-space"></span> <button class="delete-btn" onclick="deleteField(this)">✖</button></li>
+                    <li class="measurement-item"><span class="checkbox-dot"></span> <span contenteditable="true">پانی پشت</span> <span class="line-space"></span> <button class="delete-btn" onclick="deleteField(this)">✖</button></li>
+                    <li class="measurement-item"><span class="checkbox-dot"></span> <span contenteditable="true">باڵا</span> <span class="line-space"></span> <button class="delete-btn" onclick="deleteField(this)">✖</button></li>
+                    <li class="measurement-item"><span class="checkbox-dot"></span> <span contenteditable="true">پەنجە</span> <span class="line-space"></span> <button class="delete-btn" onclick="deleteField(this)">✖</button></li>
+                </ul>
+                <button class="add-btn" onclick="addField(this)" title="إضافة حقل">➕</button>
+                <div class="card-footer">
+                    <div class="notes-header"><span contenteditable="true">تێبینی:</span></div>
+                    <div class="info-row">
+                        <div class="info-field"><span contenteditable="true">مۆبایل:</span> <span class="line-space"></span></div>
+                        <div class="info-field"><span contenteditable="true">بەروار: / / 2024</span> <span class="line-space"></span></div>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- الكرت الثاني -->
-        <div class="measurement-card">
-            <div class="card-header"><span contenteditable="true">قوماشی خاتوو:</span></div>
-            <ul class="measurement-list">
-                <li class="measurement-item"><span class="checkbox-dot"></span> <span contenteditable="true">شان</span> <span class="line-space"></span> <button class="delete-btn" onclick="deleteField(this)">✖</button></li>
-                <li class="measurement-item"><span class="checkbox-dot"></span> <span contenteditable="true">سینگ</span> <span class="line-space"></span> <button class="delete-btn" onclick="deleteField(this)">✖</button></li>
-                <li class="measurement-item"><span class="checkbox-dot"></span> <span contenteditable="true">کەمەر</span> <span class="line-space"></span> <button class="delete-btn" onclick="deleteField(this)">✖</button></li>
-                <li class="measurement-item"><span class="checkbox-dot"></span> <span contenteditable="true">سەر شان تا کەمەر</span> <span class="line-space"></span> <button class="delete-btn" onclick="deleteField(this)">✖</button></li>
-                <li class="measurement-item"><span class="checkbox-dot"></span> <span contenteditable="true">درێژی قۆڵ</span> <span class="line-space"></span> <button class="delete-btn" onclick="deleteField(this)">✖</button></li>
-                <li class="measurement-item"><span class="checkbox-dot"></span> <span contenteditable="true">پانی قۆڵ</span> <span class="line-space"></span> <button class="delete-btn" onclick="deleteField(this)">✖</button></li>
-                <li class="measurement-item"><span class="checkbox-dot"></span> <span contenteditable="true">پانی پشت</span> <span class="line-space"></span> <button class="delete-btn" onclick="deleteField(this)">✖</button></li>
-                <li class="measurement-item"><span class="checkbox-dot"></span> <span contenteditable="true">باڵا</span> <span class="line-space"></span> <button class="delete-btn" onclick="deleteField(this)">✖</button></li>
-                <li class="measurement-item"><span class="checkbox-dot"></span> <span contenteditable="true">پەنجە</span> <span class="line-space"></span> <button class="delete-btn" onclick="deleteField(this)">✖</button></li>
-            </ul>
-            <button class="add-btn" onclick="addField(this)" title="إضافة حقل">➕</button>
-            <div class="card-footer">
-                <div class="notes-header"><span contenteditable="true">تێبینی:</span></div>
-                <div class="info-row">
-                    <div class="info-field"><span contenteditable="true">مۆبایل:</span> <span class="line-space"></span></div>
-                    <div class="info-field"><span contenteditable="true">بەروار: / / 2024</span> <span class="line-space"></span></div>
+            <!-- الكرت الثاني -->
+            <div class="measurement-card">
+                <div class="card-header"><span contenteditable="true">قوماشی خاتوو:</span></div>
+                <ul class="measurement-list">
+                    <li class="measurement-item"><span class="checkbox-dot"></span> <span contenteditable="true">شان</span> <span class="line-space"></span> <button class="delete-btn" onclick="deleteField(this)">✖</button></li>
+                    <li class="measurement-item"><span class="checkbox-dot"></span> <span contenteditable="true">سینگ</span> <span class="line-space"></span> <button class="delete-btn" onclick="deleteField(this)">✖</button></li>
+                    <li class="measurement-item"><span class="checkbox-dot"></span> <span contenteditable="true">کەمەر</span> <span class="line-space"></span> <button class="delete-btn" onclick="deleteField(this)">✖</button></li>
+                    <li class="measurement-item"><span class="checkbox-dot"></span> <span contenteditable="true">سەر شان تا کەمەر</span> <span class="line-space"></span> <button class="delete-btn" onclick="deleteField(this)">✖</button></li>
+                    <li class="measurement-item"><span class="checkbox-dot"></span> <span contenteditable="true">درێژی قۆڵ</span> <span class="line-space"></span> <button class="delete-btn" onclick="deleteField(this)">✖</button></li>
+                    <li class="measurement-item"><span class="checkbox-dot"></span> <span contenteditable="true">پانی قۆڵ</span> <span class="line-space"></span> <button class="delete-btn" onclick="deleteField(this)">✖</button></li>
+                    <li class="measurement-item"><span class="checkbox-dot"></span> <span contenteditable="true">پانی پشت</span> <span class="line-space"></span> <button class="delete-btn" onclick="deleteField(this)">✖</button></li>
+                    <li class="measurement-item"><span class="checkbox-dot"></span> <span contenteditable="true">باڵا</span> <span class="line-space"></span> <button class="delete-btn" onclick="deleteField(this)">✖</button></li>
+                    <li class="measurement-item"><span class="checkbox-dot"></span> <span contenteditable="true">پەنجە</span> <span class="line-space"></span> <button class="delete-btn" onclick="deleteField(this)">✖</button></li>
+                </ul>
+                <button class="add-btn" onclick="addField(this)" title="إضافة حقل">➕</button>
+                <div class="card-footer">
+                    <div class="notes-header"><span contenteditable="true">تێبینی:</span></div>
+                    <div class="info-row">
+                        <div class="info-field"><span contenteditable="true">مۆبایل:</span> <span class="line-space"></span></div>
+                        <div class="info-field"><span contenteditable="true">بەروار: / / 2024</span> <span class="line-space"></span></div>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- الكرت الثالث -->
-        <div class="measurement-card">
-            <div class="card-header"><span contenteditable="true">قوماشی خاتوو:</span></div>
-            <ul class="measurement-list">
-                <li class="measurement-item"><span class="checkbox-dot"></span> <span contenteditable="true">شان</span> <span class="line-space"></span> <button class="delete-btn" onclick="deleteField(this)">✖</button></li>
-                <li class="measurement-item"><span class="checkbox-dot"></span> <span contenteditable="true">سینگ</span> <span class="line-space"></span> <button class="delete-btn" onclick="deleteField(this)">✖</button></li>
-                <li class="measurement-item"><span class="checkbox-dot"></span> <span contenteditable="true">کەمەر</span> <span class="line-space"></span> <button class="delete-btn" onclick="deleteField(this)">✖</button></li>
-                <li class="measurement-item"><span class="checkbox-dot"></span> <span contenteditable="true">سەر شان تا کەمەر</span> <span class="line-space"></span> <button class="delete-btn" onclick="deleteField(this)">✖</button></li>
-                <li class="measurement-item"><span class="checkbox-dot"></span> <span contenteditable="true">درێژی قۆڵ</span> <span class="line-space"></span> <button class="delete-btn" onclick="deleteField(this)">✖</button></li>
-                <li class="measurement-item"><span class="checkbox-dot"></span> <span contenteditable="true">پانی قۆڵ</span> <span class="line-space"></span> <button class="delete-btn" onclick="deleteField(this)">✖</button></li>
-                <li class="measurement-item"><span class="checkbox-dot"></span> <span contenteditable="true">پانی پشت</span> <span class="line-space"></span> <button class="delete-btn" onclick="deleteField(this)">✖</button></li>
-                <li class="measurement-item"><span class="checkbox-dot"></span> <span contenteditable="true">باڵا</span> <span class="line-space"></span> <button class="delete-btn" onclick="deleteField(this)">✖</button></li>
-                <li class="measurement-item"><span class="checkbox-dot"></span> <span contenteditable="true">پەنجە</span> <span class="line-space"></span> <button class="delete-btn" onclick="deleteField(this)">✖</button></li>
-            </ul>
-            <button class="add-btn" onclick="addField(this)" title="إضافة حقل">➕</button>
-            <div class="card-footer">
-                <div class="notes-header"><span contenteditable="true">تێبینی:</span></div>
-                <div class="info-row">
-                    <div class="info-field"><span contenteditable="true">مۆبایل:</span> <span class="line-space"></span></div>
-                    <div class="info-field"><span contenteditable="true">بەروار: / / 2024</span> <span class="line-space"></span></div>
+            <!-- الكرت الثالث -->
+            <div class="measurement-card">
+                <div class="card-header"><span contenteditable="true">قوماشی خاتوو:</span></div>
+                <ul class="measurement-list">
+                    <li class="measurement-item"><span class="checkbox-dot"></span> <span contenteditable="true">شان</span> <span class="line-space"></span> <button class="delete-btn" onclick="deleteField(this)">✖</button></li>
+                    <li class="measurement-item"><span class="checkbox-dot"></span> <span contenteditable="true">سینگ</span> <span class="line-space"></span> <button class="delete-btn" onclick="deleteField(this)">✖</button></li>
+                    <li class="measurement-item"><span class="checkbox-dot"></span> <span contenteditable="true">کەمەر</span> <span class="line-space"></span> <button class="delete-btn" onclick="deleteField(this)">✖</button></li>
+                    <li class="measurement-item"><span class="checkbox-dot"></span> <span contenteditable="true">سەر شان تا کەمەر</span> <span class="line-space"></span> <button class="delete-btn" onclick="deleteField(this)">✖</button></li>
+                    <li class="measurement-item"><span class="checkbox-dot"></span> <span contenteditable="true">درێژی قۆڵ</span> <span class="line-space"></span> <button class="delete-btn" onclick="deleteField(this)">✖</button></li>
+                    <li class="measurement-item"><span class="checkbox-dot"></span> <span contenteditable="true">پانی قۆڵ</span> <span class="line-space"></span> <button class="delete-btn" onclick="deleteField(this)">✖</button></li>
+                    <li class="measurement-item"><span class="checkbox-dot"></span> <span contenteditable="true">پانی پشت</span> <span class="line-space"></span> <button class="delete-btn" onclick="deleteField(this)">✖</button></li>
+                    <li class="measurement-item"><span class="checkbox-dot"></span> <span contenteditable="true">باڵا</span> <span class="line-space"></span> <button class="delete-btn" onclick="deleteField(this)">✖</button></li>
+                    <li class="measurement-item"><span class="checkbox-dot"></span> <span contenteditable="true">پەنجە</span> <span class="line-space"></span> <button class="delete-btn" onclick="deleteField(this)">✖</button></li>
+                </ul>
+                <button class="add-btn" onclick="addField(this)" title="إضافة حقل">➕</button>
+                <div class="card-footer">
+                    <div class="notes-header"><span contenteditable="true">تێبینی:</span></div>
+                    <div class="info-row">
+                        <div class="info-field"><span contenteditable="true">مۆبایل:</span> <span class="line-space"></span></div>
+                        <div class="info-field"><span contenteditable="true">بەروار: / / 2024</span> <span class="line-space"></span></div>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- الكرت الرابع -->
-        <div class="measurement-card">
-            <div class="card-header"><span contenteditable="true">قوماشی خاتوو:</span></div>
-            <ul class="measurement-list">
-                <li class="measurement-item"><span class="checkbox-dot"></span> <span contenteditable="true">شان</span> <span class="line-space"></span> <button class="delete-btn" onclick="deleteField(this)">✖</button></li>
-                <li class="measurement-item"><span class="checkbox-dot"></span> <span contenteditable="true">سینگ</span> <span class="line-space"></span> <button class="delete-btn" onclick="deleteField(this)">✖</button></li>
-                <li class="measurement-item"><span class="checkbox-dot"></span> <span contenteditable="true">کەمەر</span> <span class="line-space"></span> <button class="delete-btn" onclick="deleteField(this)">✖</button></li>
-                <li class="measurement-item"><span class="checkbox-dot"></span> <span contenteditable="true">سەر شان تا کەمەر</span> <span class="line-space"></span> <button class="delete-btn" onclick="deleteField(this)">✖</button></li>
-                <li class="measurement-item"><span class="checkbox-dot"></span> <span contenteditable="true">درێژی قۆڵ</span> <span class="line-space"></span> <button class="delete-btn" onclick="deleteField(this)">✖</button></li>
-                <li class="measurement-item"><span class="checkbox-dot"></span> <span contenteditable="true">پانی قۆڵ</span> <span class="line-space"></span> <button class="delete-btn" onclick="deleteField(this)">✖</button></li>
-                <li class="measurement-item"><span class="checkbox-dot"></span> <span contenteditable="true">پانی پشت</span> <span class="line-space"></span> <button class="delete-btn" onclick="deleteField(this)">✖</button></li>
-                <li class="measurement-item"><span class="checkbox-dot"></span> <span contenteditable="true">باڵا</span> <span class="line-space"></span> <button class="delete-btn" onclick="deleteField(this)">✖</button></li>
-                <li class="measurement-item"><span class="checkbox-dot"></span> <span contenteditable="true">پەنجە</span> <span class="line-space"></span> <button class="delete-btn" onclick="deleteField(this)">✖</button></li>
-            </ul>
-            <button class="add-btn" onclick="addField(this)" title="إضافة حقل">➕</button>
-            <div class="card-footer">
-                <div class="notes-header"><span contenteditable="true">تێبینی:</span></div>
-                <div class="info-row">
-                    <div class="info-field"><span contenteditable="true">مۆبایل:</span> <span class="line-space"></span></div>
-                    <div class="info-field"><span contenteditable="true">بەروار: / / 2024</span> <span class="line-space"></span></div>
+            <!-- الكرت الرابع -->
+            <div class="measurement-card">
+                <div class="card-header"><span contenteditable="true">قوماشی خاتوو:</span></div>
+                <ul class="measurement-list">
+                    <li class="measurement-item"><span class="checkbox-dot"></span> <span contenteditable="true">شان</span> <span class="line-space"></span> <button class="delete-btn" onclick="deleteField(this)">✖</button></li>
+                    <li class="measurement-item"><span class="checkbox-dot"></span> <span contenteditable="true">سینگ</span> <span class="line-space"></span> <button class="delete-btn" onclick="deleteField(this)">✖</button></li>
+                    <li class="measurement-item"><span class="checkbox-dot"></span> <span contenteditable="true">کەمەر</span> <span class="line-space"></span> <button class="delete-btn" onclick="deleteField(this)">✖</button></li>
+                    <li class="measurement-item"><span class="checkbox-dot"></span> <span contenteditable="true">سەر شان تا کەمەر</span> <span class="line-space"></span> <button class="delete-btn" onclick="deleteField(this)">✖</button></li>
+                    <li class="measurement-item"><span class="checkbox-dot"></span> <span contenteditable="true">درێژی قۆڵ</span> <span class="line-space"></span> <button class="delete-btn" onclick="deleteField(this)">✖</button></li>
+                    <li class="measurement-item"><span class="checkbox-dot"></span> <span contenteditable="true">پانی قۆڵ</span> <span class="line-space"></span> <button class="delete-btn" onclick="deleteField(this)">✖</button></li>
+                    <li class="measurement-item"><span class="checkbox-dot"></span> <span contenteditable="true">پانی پشت</span> <span class="line-space"></span> <button class="delete-btn" onclick="deleteField(this)">✖</button></li>
+                    <li class="measurement-item"><span class="checkbox-dot"></span> <span contenteditable="true">باڵا</span> <span class="line-space"></span> <button class="delete-btn" onclick="deleteField(this)">✖</button></li>
+                    <li class="measurement-item"><span class="checkbox-dot"></span> <span contenteditable="true">پەنجە</span> <span class="line-space"></span> <button class="delete-btn" onclick="deleteField(this)">✖</button></li>
+                </ul>
+                <button class="add-btn" onclick="addField(this)" title="إضافة حقل">➕</button>
+                <div class="card-footer">
+                    <div class="notes-header"><span contenteditable="true">تێبینی:</span></div>
+                    <div class="info-row">
+                        <div class="info-field"><span contenteditable="true">مۆبایل:</span> <span class="line-space"></span></div>
+                        <div class="info-field"><span contenteditable="true">بەروار: / / 2024</span> <span class="line-space"></span></div>
+                    </div>
                 </div>
             </div>
-        </div>
 
+        </div>
     </div>
 
     <script>
-        // دالة الحذف
         function deleteField(btn) {
             btn.parentElement.remove();
         }
 
-        // دالة الإضافة
         function addField(btn) {
             const list = btn.previousElementSibling; 
             const li = document.createElement('li');
