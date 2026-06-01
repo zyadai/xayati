@@ -31,10 +31,10 @@
             min-height: 100vh;
         }
 
-        /* شريط أدوات الصورة (يظهر عند الضغط على صورة) */
+        /* شريط أدوات الصورة */
         #image-settings-panel {
             position: fixed;
-            top: -100px; /* مخفي في الأعلى */
+            top: -100px;
             left: 50%;
             transform: translateX(-50%);
             background: rgba(255, 255, 255, 0.95);
@@ -50,9 +50,7 @@
             backdrop-filter: blur(5px);
         }
 
-        #image-settings-panel.active {
-            top: 20px; /* يظهر للمستخدم */
-        }
+        #image-settings-panel.active { top: 20px; }
 
         .settings-btn {
             background: #f2d5df;
@@ -89,10 +87,14 @@
             overflow: hidden;
             margin-bottom: 20px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .crop-container img {
             max-width: 100%;
+            max-height: 100%;
             display: block;
         }
 
@@ -304,7 +306,7 @@
         const cardsGrid = document.querySelector('.cards-grid');
         const cardTemplate = `
             <div class="measurement-card">
-                <!-- إضافة crossorigin للصورة الافتراضية للسماح بالقص إن أمكن -->
+                <!-- الصور الافتراضية -->
                 <img src="https://cdn-icons-png.flaticon.com/512/8210/8210672.png" crossorigin="anonymous" class="draggable-img" style="bottom: 10px; left: 10px; width: 85px; opacity: 0.25; z-index: 1;" alt="فستان">
                 <img src="https://cdn-icons-png.flaticon.com/512/6188/6188880.png" crossorigin="anonymous" class="draggable-img" style="top: -5px; right: -5px; width: 110px; opacity: 0.3; transform: rotate(15deg); z-index: 1;" alt="ورد">
                 
@@ -400,24 +402,39 @@
 
         /* ---------------- نظام قص الصور (Cropper) ---------------- */
         let cropper = null;
+        let imageBeingCropped = null; // إصلاح مشكلة فقدان الصورة
         const cropModal = document.getElementById('crop-modal');
         const imageToCrop = document.getElementById('image-to-crop');
 
         function openCropper() {
             if (!activeImage) return;
 
-            try {
-                imageToCrop.src = activeImage.src;
-                cropModal.style.display = 'flex';
-                closeSettings(); // إخفاء لوحة الأدوات أثناء القص
+            // 1. حفظ الصورة المراد قصها في متغير منفصل
+            imageBeingCropped = activeImage;
 
-                cropper = new Cropper(imageToCrop, {
-                    viewMode: 1,
-                    autoCropArea: 0.8,
-                    background: false
-                });
+            try {
+                // 2. تجهيز الصورة داخل نافذة القص
+                imageToCrop.src = imageBeingCropped.src;
+                cropModal.style.display = 'flex';
+                
+                // 3. إخفاء اللوحة وإزالة الإطار من الصورة بدون تصفير المتغير
+                panel.classList.remove('active');
+                if (activeImage) activeImage.classList.remove('selected-img');
+
+                // 4. تأخير زمني صغير لضمان فتح النافذة قبل تفعيل أداة القص (ضروري جداً)
+                setTimeout(() => {
+                    if (cropper) {
+                        cropper.destroy(); // تدمير أي قص سابق
+                    }
+                    cropper = new Cropper(imageToCrop, {
+                        viewMode: 1,
+                        autoCropArea: 0.8,
+                        background: false
+                    });
+                }, 50);
+
             } catch (error) {
-                alert("حدث خطأ في تجهيز الصورة.");
+                alert("حدث خطأ في تجهيز الصورة للقص.");
                 closeCropModal();
             }
         }
@@ -431,16 +448,22 @@
         }
 
         function applyCrop() {
-            if (cropper && activeImage) {
+            if (cropper && imageBeingCropped) {
                 try {
+                    // سحب الصورة بعد القص
                     const canvas = cropper.getCroppedCanvas();
-                    activeImage.src = canvas.toDataURL('image/png'); // تحديث الصورة بالشكل المقصوص
+                    imageBeingCropped.src = canvas.toDataURL('image/png'); // تحديث الصورة بالشكل المقصوص
+                    
                     closeCropModal();
                     
-                    // إعادة تحديد الصورة لإظهار أدواتها
-                    setTimeout(() => { activeImage.click(); }, 100);
+                    // إعادة تحديد الصورة بعد ثانية لإظهار أدواتها مرة أخرى
+                    setTimeout(() => { 
+                        imageBeingCropped.click(); 
+                        imageBeingCropped = null; // تفريغ الذاكرة
+                    }, 100);
+
                 } catch (error) {
-                    alert("لا يمكن قص الصور الافتراضية بسبب حماية المتصفح، يرجى رفع صورة من جهازك لقصها بنجاح.");
+                    alert("عذراً، لا يمكن قص الصور الافتراضية بسبب حماية المتصفحات. يرجى رفع صورة من جهازك وسيعمل القص بنجاح.");
                     closeCropModal();
                 }
             }
