@@ -31,10 +31,10 @@
             min-height: 100vh;
         }
 
-        /* شريط أدوات الصورة */
+        /* --- شريط أدوات الصورة المتطور --- */
         #image-settings-panel {
             position: fixed;
-            top: -100px;
+            top: -150px; /* مخفي في الأعلى */
             left: 50%;
             transform: translateX(-50%);
             background: rgba(255, 255, 255, 0.95);
@@ -43,14 +43,20 @@
             box-shadow: 0 5px 25px rgba(212, 154, 171, 0.5);
             z-index: 9999;
             display: flex;
+            flex-wrap: wrap; /* يسمح بتعدد الأسطر في الشاشات الصغيرة */
+            justify-content: center;
             gap: 15px;
             align-items: center;
             border: 2px solid #d49aab;
             transition: top 0.3s ease-in-out;
             backdrop-filter: blur(5px);
+            width: max-content;
+            max-width: 95vw;
         }
 
-        #image-settings-panel.active { top: 20px; }
+        #image-settings-panel.active {
+            top: 15px; /* يظهر للمستخدم */
+        }
 
         .settings-btn {
             background: #f2d5df;
@@ -60,10 +66,23 @@
             cursor: pointer;
             font-size: 16px;
             transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .settings-btn:hover { background: #d49aab; color: white; }
-        .settings-slider { width: 100px; cursor: pointer; }
+        .settings-slider { width: 80px; cursor: pointer; }
+
+        .slider-group {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: #fdf5f7;
+            padding: 5px 10px;
+            border-radius: 15px;
+            border: 1px solid #f2d5df;
+        }
 
         /* ------------- نافذة قص الصور (Modal) ------------- */
         #crop-modal {
@@ -92,32 +111,14 @@
             align-items: center;
         }
 
-        .crop-container img {
-            max-width: 100%;
-            max-height: 100%;
-            display: block;
-        }
-
-        .crop-buttons {
-            display: flex;
-            gap: 15px;
-        }
-
-        .crop-buttons button {
-            padding: 12px 25px;
-            border: none;
-            border-radius: 25px;
-            font-size: 16px;
-            font-weight: bold;
-            font-family: inherit;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
+        .crop-container img { max-width: 100%; max-height: 100%; display: block; }
+        .crop-buttons { display: flex; gap: 15px; }
+        .crop-buttons button { padding: 12px 25px; border: none; border-radius: 25px; font-size: 16px; font-weight: bold; font-family: inherit; cursor: pointer; transition: 0.2s; }
         .btn-confirm { background: #90c9b1; color: #fff; }
         .btn-confirm:hover { background: #7ab39c; transform: scale(1.05); }
         .btn-cancel { background: #ff4d4d; color: #fff; }
         .btn-cancel:hover { background: #e60000; transform: scale(1.05); }
+        
         /* ------------------------------------------------ */
 
         .print-btn {
@@ -189,24 +190,11 @@
 
         .card-header, .measurement-item, .card-footer, .action-btn { pointer-events: auto; }
 
-        .card-header {
-            background: linear-gradient(to left, #ebd3da, #f5e1e7);
-            color: #5c474e;
-            font-weight: bold;
-            font-size: 14px;
-            padding: 6px 18px;
-            border-radius: 20px;
-            display: inline-flex;
-            align-items: center;
-            align-self: flex-start;
-            margin-bottom: 15px;
-        }
-
+        .card-header { background: linear-gradient(to left, #ebd3da, #f5e1e7); color: #5c474e; font-weight: bold; font-size: 14px; padding: 6px 18px; border-radius: 20px; display: inline-flex; align-items: center; align-self: flex-start; margin-bottom: 15px; }
         .measurement-list { list-style: none; padding: 0; margin: 0; flex-grow: 1; }
         .measurement-item { display: flex; align-items: center; margin-bottom: 7px; font-size: 13.5px; color: #4a3e42; font-weight: bold; position: relative; }
         .checkbox-dot { width: 14px; height: 14px; background-image: url('https://cdn-icons-png.flaticon.com/512/3032/3032272.png'); background-size: cover; margin-left: 8px; display: inline-block; opacity: 0.7; }
         .line-space { flex-grow: 1; border-bottom: 1.5px dotted #d49aab; margin-right: 8px; height: 12px; opacity: 0.6; }
-
         .card-footer { margin-top: auto; background: rgba(255, 255, 255, 0.8); padding: 8px; border-radius: 10px; border: 1px dashed #f2d5df; margin-bottom: 35px; }
         .notes-header { color: #b56c82; font-size: 12px; font-weight: bold; margin-bottom: 6px; }
         .info-row { display: flex; justify-content: space-between; font-size: 11px; color: #5c474e; font-weight: bold; } 
@@ -215,11 +203,9 @@
         [contenteditable="true"] { outline: none; border-bottom: 1px solid transparent; transition: 0.2s; cursor: text; }
         [contenteditable="true"]:hover { background-color: rgba(255, 255, 255, 0.9); border-bottom: 1px dashed #d49aab; }
 
-        /* زر حذف النص بجانب كل حقل */
         .delete-text-btn { background: #d49aab; color: white; border: none; cursor: pointer; border-radius: 50%; width: 16px; height: 16px; font-size: 8px; position: absolute; right: 0; opacity: 0; transition: 0.2s; display: flex; justify-content: center; align-items: center;}
         .measurement-item:hover .delete-text-btn { opacity: 1; right: 5px; }
 
-        /* حاوية الأزرار أسفل الكرت (ظاهرة دائماً) */
         .controls-container {
             position: absolute;
             bottom: 5px;
@@ -235,19 +221,7 @@
             pointer-events: auto;
         }
 
-        .controls-container button {
-            background: none;
-            border: none;
-            font-size: 18px;
-            cursor: pointer;
-            transition: 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            color: #b56c82;
-            font-family: inherit;
-            font-weight: bold;
-        }
+        .controls-container button { background: none; border: none; font-size: 18px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 5px; color: #b56c82; font-family: inherit; font-weight: bold; }
         .controls-container button:hover { transform: scale(1.1); color: #8e5a6a; }
 
         /* إعدادات الطباعة */
@@ -265,7 +239,7 @@
 </head>
 <body>
 
-    <!-- نافذة قص الصور (مخفية افتراضياً) -->
+    <!-- نافذة قص الصور -->
     <div id="crop-modal">
         <div class="crop-container">
             <img id="image-to-crop" src="">
@@ -276,18 +250,29 @@
         </div>
     </div>
 
-    <!-- لوحة تحكم الصورة الثابتة في الأعلى -->
+    <!-- لوحة تحكم الصورة -->
     <div id="image-settings-panel">
         <strong style="color:#b56c82; font-size: 14px;">أدوات الصورة:</strong>
-        <div style="display:flex; align-items:center; gap:5px;">
-            <span style="font-size: 12px; color:#5c474e;">الشفافية</span>
+        
+        <!-- أداة تكبير/تصغير الحجم الجديدة -->
+        <div class="slider-group">
+            <span style="font-size: 11px; color:#5c474e; font-weight:bold;">الحجم 🔍</span>
+            <input type="range" id="size-slider" class="settings-slider" min="30" max="350" step="5" value="100">
+        </div>
+
+        <!-- أداة الشفافية -->
+        <div class="slider-group">
+            <span style="font-size: 11px; color:#5c474e; font-weight:bold;">الشفافية 💧</span>
             <input type="range" id="opacity-slider" class="settings-slider" min="0.1" max="1" step="0.05" value="1">
         </div>
-        <button class="settings-btn" onclick="openCropper()" title="قص الصورة">✂️</button>
-        <button class="settings-btn" onclick="setLayer('front')" title="أمام النص">⬆️</button>
-        <button class="settings-btn" onclick="setLayer('back')" title="خلف النص">⬇️</button>
-        <button class="settings-btn" onclick="deleteActiveImg()" style="background:#ff7b93; color:white;" title="حذف">🗑️</button>
-        <button class="settings-btn" onclick="closeSettings()" title="إغلاق">❌</button>
+
+        <div style="display:flex; gap:5px;">
+            <button class="settings-btn" onclick="openCropper()" title="قص الصورة">✂️</button>
+            <button class="settings-btn" onclick="setLayer('front')" title="أمام النص">⬆️</button>
+            <button class="settings-btn" onclick="setLayer('back')" title="خلف النص">⬇️</button>
+            <button class="settings-btn" onclick="deleteActiveImg()" style="background:#ff7b93; color:white;" title="حذف">🗑️</button>
+            <button class="settings-btn" onclick="closeSettings()" title="إغلاق">❌</button>
+        </div>
     </div>
 
     <button class="print-btn" onclick="window.print()">🌸 طباعة الورقة (A4)</button>
@@ -295,18 +280,17 @@
 
     <div class="a4-paper">
         <div class="cards-grid">
-            <!-- الكروت سيتم توليدها برمجياً لضمان النظافة -->
+            <!-- الكروت تتولد عبر السكربت -->
         </div>
     </div>
 
-    <!-- مكتبة قص الصور (JS) -->
+    <!-- مكتبة القص (JS) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
 
     <script>
         const cardsGrid = document.querySelector('.cards-grid');
         const cardTemplate = `
             <div class="measurement-card">
-                <!-- الصور الافتراضية -->
                 <img src="https://cdn-icons-png.flaticon.com/512/8210/8210672.png" crossorigin="anonymous" class="draggable-img" style="bottom: 10px; left: 10px; width: 85px; opacity: 0.25; z-index: 1;" alt="فستان">
                 <img src="https://cdn-icons-png.flaticon.com/512/6188/6188880.png" crossorigin="anonymous" class="draggable-img" style="top: -5px; right: -5px; width: 110px; opacity: 0.3; transform: rotate(15deg); z-index: 1;" alt="ورد">
                 
@@ -348,21 +332,18 @@
             const list = btn.closest('.measurement-card').querySelector('.measurement-list');
             const li = document.createElement('li');
             li.className = 'measurement-item';
-            li.innerHTML = `
-                <span class="checkbox-dot"></span> <span contenteditable="true">پێوانەی نوێ</span> <span class="line-space"></span> 
-                <button class="delete-text-btn" onclick="deleteField(this)">✖</button>
-            `;
+            li.innerHTML = `<span class="checkbox-dot"></span> <span contenteditable="true">پێوانەی نوێ</span> <span class="line-space"></span> <button class="delete-text-btn" onclick="deleteField(this)">✖</button>`;
             list.appendChild(li);
         }
 
-        /* ---------------- وظائف الصور والشفافية ---------------- */
+        /* ---------------- أدوات الصورة (الشفافية والحجم) ---------------- */
         let activeImage = null;
         let currentCard = null;
         const panel = document.getElementById('image-settings-panel');
         const opacitySlider = document.getElementById('opacity-slider');
+        const sizeSlider = document.getElementById('size-slider'); // إضافة متغير الحجم
         const uploader = document.getElementById('imageUploader');
 
-        // تحديد الصورة عند النقر عليها
         document.addEventListener('click', function(e) {
             if (e.target.classList.contains('draggable-img')) {
                 if (activeImage) activeImage.classList.remove('selected-img');
@@ -370,15 +351,28 @@
                 activeImage.classList.add('selected-img');
                 
                 panel.classList.add('active');
+                
+                // قراءة القيم الحالية للصورة لضبط أشرطة التمرير عليها
                 opacitySlider.value = activeImage.style.opacity || 1;
+                
+                let currentWidth = parseInt(window.getComputedStyle(activeImage).width) || 100;
+                sizeSlider.value = currentWidth;
             } 
             else if (!e.target.closest('#image-settings-panel') && !e.target.closest('.controls-container') && !e.target.closest('#crop-modal')) {
                 closeSettings();
             }
         });
 
+        // تغيير الشفافية
         opacitySlider.addEventListener('input', function() {
             if (activeImage) { activeImage.style.opacity = this.value; }
+        });
+
+        // تغيير الحجم (التكبير والتصغير)
+        sizeSlider.addEventListener('input', function() {
+            if (activeImage) {
+                activeImage.style.width = this.value + 'px';
+            }
         });
 
         function closeSettings() {
@@ -394,82 +388,54 @@
         }
 
         function deleteActiveImg() {
-            if (activeImage) {
-                activeImage.remove();
-                closeSettings();
-            }
+            if (activeImage) { activeImage.remove(); closeSettings(); }
         }
 
-        /* ---------------- نظام قص الصور (Cropper) ---------------- */
+        /* ---------------- نظام القص (Cropper) ---------------- */
         let cropper = null;
-        let imageBeingCropped = null; // إصلاح مشكلة فقدان الصورة
+        let imageBeingCropped = null;
         const cropModal = document.getElementById('crop-modal');
         const imageToCrop = document.getElementById('image-to-crop');
 
         function openCropper() {
             if (!activeImage) return;
-
-            // 1. حفظ الصورة المراد قصها في متغير منفصل
             imageBeingCropped = activeImage;
-
             try {
-                // 2. تجهيز الصورة داخل نافذة القص
                 imageToCrop.src = imageBeingCropped.src;
                 cropModal.style.display = 'flex';
-                
-                // 3. إخفاء اللوحة وإزالة الإطار من الصورة بدون تصفير المتغير
                 panel.classList.remove('active');
                 if (activeImage) activeImage.classList.remove('selected-img');
 
-                // 4. تأخير زمني صغير لضمان فتح النافذة قبل تفعيل أداة القص (ضروري جداً)
                 setTimeout(() => {
-                    if (cropper) {
-                        cropper.destroy(); // تدمير أي قص سابق
-                    }
-                    cropper = new Cropper(imageToCrop, {
-                        viewMode: 1,
-                        autoCropArea: 0.8,
-                        background: false
-                    });
+                    if (cropper) { cropper.destroy(); }
+                    cropper = new Cropper(imageToCrop, { viewMode: 1, autoCropArea: 0.8, background: false });
                 }, 50);
-
             } catch (error) {
-                alert("حدث خطأ في تجهيز الصورة للقص.");
-                closeCropModal();
+                alert("حدث خطأ."); closeCropModal();
             }
         }
 
         function closeCropModal() {
             cropModal.style.display = 'none';
-            if (cropper) {
-                cropper.destroy();
-                cropper = null;
-            }
+            if (cropper) { cropper.destroy(); cropper = null; }
         }
 
         function applyCrop() {
             if (cropper && imageBeingCropped) {
                 try {
-                    // سحب الصورة بعد القص
                     const canvas = cropper.getCroppedCanvas();
-                    imageBeingCropped.src = canvas.toDataURL('image/png'); // تحديث الصورة بالشكل المقصوص
-                    
+                    imageBeingCropped.src = canvas.toDataURL('image/png');
                     closeCropModal();
                     
-                    // إعادة تحديد الصورة بعد ثانية لإظهار أدواتها مرة أخرى
-                    setTimeout(() => { 
-                        imageBeingCropped.click(); 
-                        imageBeingCropped = null; // تفريغ الذاكرة
-                    }, 100);
-
+                    setTimeout(() => { imageBeingCropped.click(); imageBeingCropped = null; }, 100);
                 } catch (error) {
-                    alert("عذراً، لا يمكن قص الصور الافتراضية بسبب حماية المتصفحات. يرجى رفع صورة من جهازك وسيعمل القص بنجاح.");
+                    alert("لا يمكن قص الصور الافتراضية، يرجى رفع صورة من جهازك لقصها بنجاح.");
                     closeCropModal();
                 }
             }
         }
 
-        /* ---------------- رفع صورة جديدة ---------------- */
+        /* ---------------- رفع الصور ---------------- */
         function triggerAddImage(btn) {
             currentCard = btn.closest('.measurement-card');
             uploader.click();
@@ -490,14 +456,14 @@
                     newImg.style.zIndex = '3'; 
                     currentCard.appendChild(newImg);
                     
-                    newImg.click();
+                    setTimeout(() => { newImg.click(); }, 50);
                 };
                 reader.readAsDataURL(file);
             }
             uploader.value = ''; 
         });
 
-        /* ---------------- نظام سحب وإفلات الصور ---------------- */
+        /* ---------------- نظام السحب (Drag & Drop) ---------------- */
         let isDragging = false;
         let offsetX, offsetY;
 
@@ -512,7 +478,6 @@
             const target = e.target;
             if (target.classList.contains('draggable-img')) {
                 e.preventDefault();
-                
                 target.style.left = target.offsetLeft + 'px';
                 target.style.top = target.offsetTop + 'px';
                 target.style.bottom = 'auto';
@@ -531,7 +496,6 @@
         function drag(e) {
             if (!isDragging || !activeImage) return;
             e.preventDefault();
-            
             const clientX = e.clientX || e.touches[0].clientX;
             const clientY = e.clientY || e.touches[0].clientY;
             const parentRect = activeImage.parentElement.getBoundingClientRect();
@@ -543,10 +507,7 @@
             activeImage.style.top = newTop + 'px';
         }
 
-        function endDrag() {
-            isDragging = false;
-        }
-
+        function endDrag() { isDragging = false; }
     </script>
 </body>
 </html>
